@@ -8,6 +8,8 @@ import           System.Environment
 import           System.FilePath
 import           System.IO
 
+import           Scanner
+
 data V2MdOptions
   = V2MdOptions { output :: Maybe String
                 , source :: String
@@ -26,8 +28,9 @@ processOptions (V2MdOptions (Just output) src)
 
 processVFile :: String -> String -> IO()
 processVFile output src
-  = do putStrLn src
-       putStrLn output
+  = do content <- readFile src
+       let res = scanCoq content
+       print res
 
 main :: IO ()
 main = execParser opts >>= processOptions
