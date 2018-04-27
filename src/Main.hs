@@ -8,7 +8,7 @@ import           System.Environment
 import           System.FilePath
 import           System.IO
 
-import           Scanner
+import PandocProcess
 
 data V2MdOptions
   = V2MdOptions { output :: Maybe String
@@ -21,16 +21,16 @@ pV2Md = V2MdOptions
   <*> strArgument (metavar "SOURCE")
 
 processOptions :: V2MdOptions -> IO ()
-processOptions (V2MdOptions Nothing src)
-  = processVFile (replaceExtension src "md") src
-processOptions (V2MdOptions (Just output) src)
-  = processVFile output src
+processOptions (V2MdOptions maybeOutput src)
+  = processVFile maybeOutput src
 
-processVFile :: String -> String -> IO()
-processVFile output src
+processVFile :: Maybe String -> String -> IO()
+processVFile maybeOutput src
   = do content <- readFile src
-       let res = scanCoq content
-       print res
+       let res = genMarkdown content
+       case maybeOutput of
+        Nothing -> putStr res
+        Just fn -> writeFile fn res
 
 main :: IO ()
 main = execParser opts >>= processOptions

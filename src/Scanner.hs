@@ -1,22 +1,40 @@
 module Scanner where
 
 import qualified Data.List as L
+import Utils
 
 data TokenCoq
   = SimpleComment String
-  | CoqDoc String -- [DocElem]
+  | CoqDoc String
   | CodeChunk String
   deriving Show
 
-data DocElem
-  = DocTextBlock [DocLine]
-  | DocCodeBlock [DocLine]
-  | DocListBlock [DocLine]
-  deriving Show
 
-data DocLine
-  = DocLine String
-  deriving Show
+{-
+Structural tokens in V files
+- Title
+    * Basics: Functional Programming in Coq
+    **** Exercise: 1 star (nandb)
+
+    The first the main title, and the others are second titles
+
+    We need to pre-process this, by change the first * to #
+    and the others to # + 1
+
+    **** should be transformed to #####
+
+- Cursive
+    _first-class_
+
+    This is the same as in Markdown
+
+- Code Chunk
+    [Day]
+
+    This need to be changed to `Day`
+
+-}
+
 
 scanCoq :: String -> [TokenCoq]
 scanCoq [] = []
@@ -25,8 +43,8 @@ scanCoq fileContent
                                   in v : scanCoq r
   | isCoqDoc fileContent = let (v, r) = buildCommentElement CoqDoc fileContent "(** "
                            in v : scanCoq r
-  | otherwise = let (r1, v, r2) = consumeUntil ["(* ", "(** "] fileContent
-                in CodeChunk v : scanCoq (r1 ++ r2)
+  | otherwise = let (_, token, v, r2) = consumeUntil ["(* ", "(** "] fileContent
+                in CodeChunk v : scanCoq (token ++ r2)
 
 isCoqDoc :: String -> Bool
 isCoqDoc = L.isPrefixOf "(** "
@@ -37,21 +55,6 @@ isSimpleComment = L.isPrefixOf "(* "
 --buildSimpleElement :: String -> String -> String -> (TokenCoq, String)
 buildCommentElement f content tkStart
   = let (pre, rest1) = L.splitAt (length tkStart) content
-        (_, mid, rest2) = consumeUntil [" *)", "*)"] rest1
+        (_, _, mid, rest2) = consumeUntil [" *)", "*)"] rest1
     in (f mid, rest2)
 
-consumeUntil :: [String] -> String -> (String, String, String)
-consumeUntil = consumeUntilWithRest []
-  where consumeUntilWithRest middle tokens []
-            = ([], middle, []) --error $ "End token '" ++ show tokens ++ "' not found."
-        consumeUntilWithRest middle tokens content
-            = case isPrefixTokenOf tokens content of
-                Nothing -> let (r1, r2) = L.splitAt 1 content
-                           in consumeUntilWithRest (middle ++ r1) tokens r2
-                Just tk -> let (pre, restContent) = L.splitAt (length tk) content
-                           in (pre, middle, restContent)
-        isPrefixTokenOf :: [String] -> String -> Maybe String
-        isPrefixTokenOf [] _ = Nothing
-        isPrefixTokenOf (tk: tkList) cnt = if L.isPrefixOf tk cnt
-                                           then Just tk
-                                           else isPrefixTokenOf tkList cnt
