@@ -7,7 +7,6 @@ Build & Install
 ````
 stack build
 stack install
-stack
 ````
 
 Using it
