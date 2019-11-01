@@ -17,7 +17,7 @@ instance Show TokenMd where
   showsPrec _ (EmptyMd) = showString ""
   showsPrec _ (CoqComment str) = showString ""
   showsPrec _ (CoqMd str) = showString $ str ++ "\n"
-  showsPrec _ (CodeMd str) = showString ("````\n" ++ str ++ "\n````\n")
+  showsPrec _ (CodeMd str) = showString ("````coq\n" ++ str ++ "\n````\n")
 
 genMarkdown :: String -> String
 genMarkdown = L.unlines
