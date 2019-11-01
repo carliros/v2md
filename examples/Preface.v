@@ -3,40 +3,45 @@
 (* ################################################################# *)
 (** * Welcome *)
 
-(** This electronic book is a course on _Software Foundations_, the
-    mathematical underpinnings of reliable software.  Topics include
+(** This is the entry point in a series of electronic textbooks on
+    various aspects of _Software Foundations_ -- the mathematical
+    underpinnings of reliable software.  Topics in the series include
     basic concepts of logic, computer-assisted theorem proving, the
     Coq proof assistant, functional programming, operational
-    semantics, Hoare logic, and static type systems.  The exposition
-    is intended for a broad range of readers, from advanced
-    undergraduates to PhD students and researchers.  No specific
-    background in logic or programming languages is assumed, though a
-    degree of mathematical maturity will be helpful.
+    semantics, logics for reasoning about programs, and static type
+    systems.  The exposition is intended for a broad range of readers,
+    from advanced undergraduates to PhD students and researchers.  No
+    specific background in logic or programming languages is assumed,
+    though a degree of mathematical maturity will be helpful.
 
-    The principal novelty of the course is that it is one hundred
-    percent formalized and machine-checked: the entire text is
-    literally a script for Coq.  It is intended to be read
-    alongside (or inside) an interactive session with Coq.  All the
-    details in the text are fully formalized in Coq, and most of the
-    exercises are designed to be worked using Coq.
+    The principal novelty of the series is that it is one hundred
+    percent formalized and machine-checked: each text is literally a
+    script for Coq.  The books are intended to be read alongside (or
+    inside) an interactive session with Coq.  All the details in the
+    text are fully formalized in Coq, and most of the exercises are
+    designed to be worked using Coq.
 
-    The files are organized into a sequence of core chapters, covering
-    about one semester's worth of material and organized into a
-    coherent linear narrative, plus a number of "offshoot" chapters
-    covering additional topics.  All the core chapters are suitable
-    for both upper-level undergraduate and graduate students. *)
+    The files in each book are organized into a sequence of core
+    chapters, covering about one semester's worth of material and
+    organized into a coherent linear narrative, plus a number of
+    "offshoot" chapters covering additional topics.  All the core
+    chapters are suitable for both upper-level undergraduate and
+    graduate students.
 
+    This book, _Logical Foundations_, lays groundwork for the others,
+    introducing the reader to the basic ideas of functional
+    programming, constructive logic, and the Coq proof assistant. *)
 
 (* ################################################################# *)
 (** * Overview *)
 
-(** Building reliable software is hard.  The scale and complexity of
-    modern systems, the number of people involved in building them,
-    and the range of demands placed on them make it extremely
-    difficult to build software that is even more-or-less correct,
-    much less 100%% correct.  At the same time, the increasing degree
-    to which information processing is woven into every aspect of
-    society greatly amplifies the cost of bugs and insecurities.
+(** Building reliable software is really hard.  The scale and
+    complexity of modern systems, the number of people involved, and
+    the range of demands placed on them make it extremely difficult to
+    build software that is even more-or-less correct, much less 100%%
+    correct.  At the same time, the increasing degree to which
+    information processing is woven into every aspect of society
+    greatly amplifies the cost of bugs and insecurities.
 
     Computer scientists and software engineers have responded to these
     challenges by developing a whole host of techniques for improving
@@ -47,10 +52,10 @@
     object-oriented programming, aspect-oriented programming,
     functional programming, ...) to mathematical techniques for
     specifying and reasoning about properties of software and tools
-    for helping validate these properties.  The present course is
-    focused on this last set of techniques.
+    for helping validate these properties.  The _Software Foundations_
+    series is focused on this last set of techniques.
 
-    The text weaves together five conceptual threads:
+    The text is constructed around three conceptual threads:
 
     (1) basic tools from _logic_ for making and justifying precise
         claims about programs;
@@ -60,26 +65,11 @@
 
     (3) _functional programming_, both as a method of programming that
         simplifies reasoning about programs and as a bridge between
-        programming and logic;
+        programming and logic.
 
-    (4) formal techniques for _reasoning about the properties of
-        specific programs_ (e.g., the fact that a sorting function or
-        a compiler obeys some formal specification); and
-
-    (5) the use of _type systems_ for establishing well-behavedness
-        guarantees for _all_ programs in a given programming
-        language (e.g., the fact that well-typed Java programs cannot
-        be subverted at runtime).
-
-    Each of these is easily rich enough to fill a whole course in its
-    own right, and tackling all of them together naturally means that
-    much will be left unsaid.  Nevertheless, we hope readers will find
-    that these themes illuminate and amplify each other and that
-    bringing them together creates a good foundation for digging into
-    any of them more deeply.  Some suggestions for further reading can
-    be found in the [Postscript] chapter.  Bibliographic
-    information for all cited works can be found in the file
-    [Bib]. *)
+    Some suggestions for further reading can be found in the
+    [Postscript] chapter.  Bibliographic information for all
+    cited works can be found in the file [Bib]. *)
 
 (* ================================================================= *)
 (** ** Logic *)
@@ -92,7 +82,7 @@
     Effectiveness of Logic in Computer Science_ catalogs scores of
     ways in which logic offers critical tools and insights.  Indeed,
     they observe that, "As a matter of fact, logic has turned out to
-    be significiantly more effective in computer science than it has
+    be significantly more effective in computer science than it has
     been in mathematics.  This is quite remarkable, especially since
     much of the impetus for the development of logic during the past
     one hundred years came from mathematics."
@@ -100,8 +90,8 @@
     In particular, the fundamental tools of _inductive proof_ are
     ubiquitous in all of computer science.  You have surely seen them
     before, perhaps in a course on discrete math or analysis of
-    algorithms, but in this course we will examine them much more
-    deeply than you have probably done so far. *)
+    algorithms, but in this course we will examine them more deeply
+    than you have probably done so far. *)
 
 (* ================================================================= *)
 (** ** Proof Assistants *)
@@ -253,84 +243,6 @@
     very same underlying machinery -- i.e., _proofs are programs_.  *)
 
 (* ================================================================= *)
-(** ** Program Verification *)
-
-(** Approximately the first third of _Software Foundations_ is devoted
-    to developing the conceptual framework of logic and functional
-    programming and gaining enough fluency with Coq to use it for
-    modeling and reasoning about nontrivial artifacts.  In the middle
-    third, we turn our attention to two broad topics of critical
-    importance in building reliable software (and hardware):
-    techniques for proving specific properties of particular
-    _programs_ and for proving general properties of whole programming
-    _languages_.
-
-    For both of these, the first thing we need is a way of
-    representing programs as mathematical objects, so we can talk
-    about them precisely, plus ways of describing their behavior in
-    terms of mathematical functions or relations.  Our main tools for
-    these tasks are _abstract syntax_ and _operational semantics_, a
-    method of specifying programming languages by writing abstract
-    interpreters.  At the beginning, we work with operational
-    semantics in the so-called "big-step" style, which leads to simple
-    and readable definitions when it is applicable.  Later on, we
-    switch to a lower-level "small-step" style, which helps make some
-    useful distinctions (e.g., between different sorts of
-    nonterminating program behaviors) and which is applicable to a
-    broader range of language features, including concurrency.
-
-    The first programming language we consider in detail is _Imp_, a
-    tiny toy language capturing the core features of conventional
-    imperative programming: variables, assignment, conditionals, and
-    loops.
-
-    We study two different ways of reasoning about the properties of
-    Imp programs.  First, we consider what it means to say that two
-    Imp programs are _equivalent_ in the intuitive sense that they
-    exhibit the same behavior when started in any initial memory
-    state.  This notion of equivalence then becomes a criterion for
-    judging the correctness of _metaprograms_ -- programs that
-    manipulate other programs, such as compilers and optimizers.  We
-    build a simple optimizer for Imp and prove that it is correct.
-
-    Second, we develop a methodology for proving that a given Imp
-    program satisfies some formal specifications of its behavior.  We
-    introduce the notion of _Hoare triples_ -- Imp programs annotated
-    with pre- and post-conditions describing what they expect to be
-    true about the memory in which they are started and what they
-    promise to make true about the memory in which they terminate --
-    and the reasoning principles of _Hoare Logic_, a domain-specific
-    logic specialized for convenient compositional reasoning about
-    imperative programs, with concepts like "loop invariant" built in.
-
-    This part of the course is intended to give readers a taste of the
-    key ideas and mathematical tools used in a wide variety of
-    real-world software and hardware verification tasks. *)
-
-(* ================================================================= *)
-(** ** Type Systems *)
-
-(** Our final major topic, covering approximately the last third of
-    the course, is _type systems_, which are powerful tools for
-    establishing properties of _all_ programs in a given language.
-
-    Type systems are the best established and most popular example of
-    a highly successful class of formal verification techniques known
-    as _lightweight formal methods_.  These are reasoning techniques
-    of modest power -- modest enough that automatic checkers can be
-    built into compilers, linkers, or program analyzers and thus be
-    applied even by programmers unfamiliar with the underlying
-    theories.  Other examples of lightweight formal methods include
-    hardware and software model checkers, contract checkers, and
-    run-time monitoring techniques.
-
-    This also completes a full circle with the beginning of the book:
-    the language whose properties we study in this part, the _simply
-    typed lambda-calculus_, is essentially a simplified model of the
-    core of Coq itself!
-*)
-
-(* ================================================================= *)
 (** ** Further Reading *)
 
 (** This text is intended to be self contained, but readers looking
@@ -344,34 +256,39 @@
 (* ================================================================= *)
 (** ** Chapter Dependencies *)
 
-(** A diagram of the dependencies between chapters and some 
+(** A diagram of the dependencies between chapters and some suggested
     paths through the material can be found in the file [deps.html]. *)
 
 (* ================================================================= *)
 (** ** System Requirements *)
 
-(** Coq runs on Windows, Linux, and OS X.  You will need:
+(** Coq runs on Windows, Linux, and macOS.  You will need:
 
-       - A current installation of Coq, available from the Coq home
-         page.  Everything should work with version 8.4 (or 8.5).
+    - A current installation of Coq, available from the Coq home page.
+      These files have been tested with Coq 8.8.1.
 
-       - An IDE for interacting with Coq.  Currently, there are two
-         choices:
+    - An IDE for interacting with Coq.  Currently, there are two
+      choices:
 
-           - Proof General is an Emacs-based IDE.  It tends to be
-             preferred by users who are already comfortable with
-             Emacs.  It requires a separate installation (google
-             "Proof General").
+        - Proof General is an Emacs-based IDE.  It tends to be
+          preferred by users who are already comfortable with Emacs.
+          It requires a separate installation (google "Proof
+          General").
 
-             Adventurous users of Coq within Emacs may also want to
-             check out extensions such as [company-coq] and
-             [control-lock].
+          Adventurous users of Coq within Emacs may also want to check
+          out extensions such as [company-coq] and [control-lock].
 
-           - CoqIDE is a simpler stand-alone IDE.  It is distributed
-             with Coq, so it should be available once you have Coq
-             installed.  It can also be compiled from scratch, but on
-             some platforms this may involve installing additional
-             packages for GUI libraries and such. *)
+        - CoqIDE is a simpler stand-alone IDE.  It is distributed with
+          Coq, so it should be available once you have Coq installed.
+          It can also be compiled from scratch, but on some platforms
+          this may involve installing additional packages for GUI
+          libraries and such.
+
+          Users who like CoqIDE should consider running it with the
+          "asynchronous" and "error resilience" modes disabled:
+
+  coqide -async-proofs off -async-proofs-command-error-resilience off Foo.v &
+*)
 
 (* ================================================================= *)
 (** ** Exercises *)
@@ -399,27 +316,48 @@
     readers.  Advanced exercises are for readers who want an extra
     challenge and a deeper cut at the material.
 
-    _Please do not post solutions to the exercises in a public places_: 
+    _Please do not post solutions to the exercises in a public place_. 
     Software Foundations is widely used both for self-study and for
     university courses.  Having solutions easily available makes it
     much less useful for courses, which typically have graded homework
     assignments.  We especially request that readers not post
     solutions to the exercises anyplace where they can be found by
-    search engines.
-*)
+    search engines. *)
 
 (* ================================================================= *)
 (** ** Downloading the Coq Files *)
 
 (** A tar file containing the full sources for the "release version"
     of this book (as a collection of Coq scripts and HTML files) is
-    available here:
+    available at http://softwarefoundations.cis.upenn.edu.
 
-        http://www.cis.upenn.edu/~bcpierce/sf
+    If you are using the book as part of a class, your professor may
+    give you access to a locally modified version of the files; you
+    should use this one instead of the public release version, so that
+    you get any local updates during the semester. *)
 
-    (If you are using the book as part of a class, your professor may
-    give you access to a locally modified version of the files, which
-    you should use instead of the release version.) *)
+(* ################################################################# *)
+(** * Resources *)
+
+(* ================================================================= *)
+(** ** Sample Exams *)
+
+(** A large compendium of exams from many offerings of
+    CIS500 ("Software Foundations") at the University of Pennsylvania
+    can be found at
+    https://www.seas.upenn.edu/~cis500/current/exams/index.html.
+    There has been some drift of notations over the years, but most of
+    the problems are still relevant to the current text. *)
+
+(* ================================================================= *)
+(** ** Lecture Videos *)
+
+(** Lectures for two intensive summer courses based on _Logical
+    Foundations_ (part of the DeepSpec summer school series) can be
+    found at https://deepspec.org/event/dsss17 and
+    https://deepspec.org/event/dsss18/.  The video quality in the
+    2017 lectures is poor at the beginning but gets better in the
+    later lectures. *)
 
 (* ################################################################# *)
 (** * Note for Instructors *)
@@ -428,12 +366,12 @@
     undoubtedly find things you'd like to change, improve, or add.
     Your contributions are welcome!
 
-    In order to keep the legalities simple and to have a single
-    point of responsibility in case the need should ever arise to
-    adjust the license terms, sublicense, etc., we ask all
-    contributors (i.e., everyone with access to the developers'
-    repository) to assign copyright in their contributions to the
-    appropriate "author of record," as follows:
+    In order to keep the legalities simple and to have a single point
+    of responsibility in case the need should ever arise to adjust the
+    license terms, sublicense, etc., we ask all contributors (i.e.,
+    everyone with access to the developers' repository) to assign
+    copyright in their contributions to the appropriate "author of
+    record," as follows:
 
       - I hereby assign copyright in my past and future contributions
         to the Software Foundations project to the Author of Record of
@@ -442,28 +380,37 @@
         present, the Authors of Record are as follows: For Volumes 1
         and 2, known until 2016 as "Software Foundations" and from
         2016 as (respectively) "Logical Foundations" and "Programming
-        Foundations," the Author of Record is Benjamin Pierce.  For
-        Volume 3, "Verified Functional Algorithms", the Author of
+        Foundations," and for Volume 4, "QuickChick: Property-Based
+        Testing in Coq," the Author of Record is Benjamin C. Pierce.
+        For Volume 3, "Verified Functional Algorithms", the Author of
         Record is Andrew W. Appel. For components outside of
-        designated Volumes (e.g., typesetting and grading tools and
+        designated volumes (e.g., typesetting and grading tools and
         other software infrastructure), the Author of Record is
         Benjamin Pierce.
 
-    To get started, please send an email to Benjamin Pierce, describing
-    yourself and how you plan to use the materials and including 
-       (1) the above copyright transfer text and 
-       (2) the result of doing "htpasswd -s -n NAME"
-    where NAME is your preferred user name. 
+    To get started, please send an email to Benjamin Pierce,
+    describing yourself and how you plan to use the materials and
+    including (1) the above copyright transfer text and (2) your
+    github username.
 
-    We'll set you up with access to the subversion repository and 
-    developers' mailing lists.  In the repository you'll find a 
-    file [INSTRUCTORS] with further instructions. *)
+    We'll set you up with access to the git repository and developers'
+    mailing lists.  In the repository you'll find a file [INSTRUCTORS]
+    with further instructions. *)
 
 (* ################################################################# *)
 (** * Translations *)
 
 (** Thanks to the efforts of a team of volunteer translators,
     _Software Foundations_ can be enjoyed in Japanese at
-    [http://proofcafe.org/sf].  A Chinese translation is underway. *)
+    http://proofcafe.org/sf.  A Chinese translation is also underway;
+    you can preview it at https://coq-zh.github.io/SF-zh/. *)
 
-(** $Date: 2016-08-29 16:12:34 -0400 (Mon, 29 Aug 2016) $ *)
+(* ################################################################# *)
+(** * Thanks *)
+
+(** Development of the _Software Foundations_ series has been
+    supported, in part, by the National Science Foundation under the
+    NSF Expeditions grant 1521523, _The Science of Deep
+    Specification_. *)
+
+(* Wed Jan 9 12:02:43 EST 2019 *)
